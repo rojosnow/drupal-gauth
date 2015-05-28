@@ -26,7 +26,7 @@ function gauth_login_menu() {
   $items = array();
   $items['admin/config/services/gauth_login'] = array(
     'title' => 'Google Login Settings',
-    'description' => 'Google Account settings.',
+    'description' => 'Google Login settings.',
     'page callback'    => 'drupal_get_form',
     'page arguments' => array('gauth_login_settings'),
     'access arguments' => array('administer site configuration'),

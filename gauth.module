@@ -88,11 +88,39 @@ function gauth_menu() {
  */
 function gauth_theme() {
   return array(
+    // Theme for global Google Developers Console help message.
+    'gauth_google_developers_console_help' => array(
+      'variables' => array(),
+    ),
     // Theme functions in gauth.admin.inc.
     'gauth_account_list' => array(
       'variables' => array('accounts' => NULL),
     ),
   );
+}
+
+/**
+ * Google Developers Console help message used in all modules.
+ * @param array $variables
+ * @return string
+ */
+function theme_gauth_google_developers_console_help($variables) {
+  $build = array();
+  $build['google_developers_console_help'] = array(
+    '#prefix' => '<p>',
+    '#markup' => t('The values for the fields below can be found in the
+      <a href="@url_console" target="_blank">Google Developers Console</a>.
+      Click on your Project Name then click API & auth, Credentials. If you
+      don\'t have an existing account, Client ID, or project, please see the
+      <a href="@url_help" target="_blank">Google Developers Console Help</a>.',
+      array(
+        '@url_console' => url('https://console.developers.google.com'),
+        '@url_help' => url('https://developers.google.com/console/help/new'),
+      )
+    ),
+    '#suffix' => '</p>',
+  );
+  return render($build);
 }
 
 /**
