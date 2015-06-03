@@ -4,10 +4,3 @@ core = 7.x
 dependencies[] = gauth
 package = Google Api
 configure = admin/config/services/gauth_login
-
-; Information added by Drupal.org packaging script on 2014-08-28
-version = "7.x-1.4+1-dev"
-core = "7.x"
-project = "gauth"
-datestamp = "1409253539"
-
