@@ -88,14 +88,44 @@ function gauth_login_gauth_google_response() {
         $account['services'] = 'oauth2';
         $account['is_authenticated'] = TRUE;
 
+        // If user is not found, attempt to add.
         if (!$new_user = gauth_login_find_existing_user($info)) {
-          $user = new stdClass();
-          $user->mail = $info['email'];
-          $user->name = user_load_by_name($info['name']) ? $info['name'] . time() : $info['name'];
-          $user->is_new = TRUE;
-          $user->status = 1;
-          $new_user = user_save($user);
+          if (USER_REGISTER_ADMINISTRATORS_ONLY === variable_get('user_register', NULL)) {
+            // If a user wasn't found and admin register only, don't create a user.
+            // The module is not allowed to create a user in this case. It must be
+            // done manually.
+
+            // Set message.
+            drupal_set_message(t('Please contact the administrator for an account on this system. %email was not recognized.', array(
+                '%email' => isset($info['email']) ? $info['email'] : 'No Email',
+              )), 'warning');
+
+            // Create a warning message.
+            $message = t('Google login attempted by: %name|%email', array(
+                '%name' => isset($info['name']) ? $info['name'] : 'No Name',
+                '%email' => isset($info['email']) ? $info['email'] : 'No Email',
+              ));
+
+            // Watchdog warning.
+            watchdog('gauth_login', $message);
+
+            // Send the user back to the home page.
+            drupal_goto();
+          }
+          else {
+            // Add a new user based upon the Account settings.
+            $user = new stdClass();
+            $user->mail = $info['email'];
+            $user->name = user_load_by_name($info['name']) ? $info['name'] . time() : $info['name'];
+            $user->is_new = TRUE;
+            $user->status = 0; // Handles the USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL and the default case always approve.
+            if (USER_REGISTER_VISITORS === variable_get('user_register', NULL)) {
+              $user->status = 1;
+            }
+            $new_user = user_save($user);
+          }
         }
+
         $form_state['uid'] = $new_user->uid;
         user_login_submit(array(), $form_state);
         global $user;
