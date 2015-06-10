@@ -135,32 +135,40 @@ function gauth_libraries_info() {
     'download url' => 'https://github.com/google/google-api-php-client',
     'version arguments' => array(
       'file' => 'src/Google/Client.php',
-      'pattern' => '/LIBVER = "([0-9\.a-z]+)/',
+      'pattern' => '/LIBVER = "([0-9\.a-z]+)/', //LIBVER = "1.1.4";
       'lines' => 50,
     ),
     'versions' => array(
-      '1.0.5-beta' => array(
-        'files' => array(
-          'php' => array(
-            'src/Google/Client.php',
-          ),
-        ),
-      ),
-      '1.1.4' => array(
-        'files' => array(
-          'php' => array(
-            'src/Google/Client.php',
-          ),
-        ),
-      ),
-      '1.1.5' => array(
-        'files' => array(
-          'php' => array(
-            'src/Google/Client.php',
-          ),
-        ),
+      '1.0.5-beta' => array(),
+    ),
+    'files' => array(
+      'php' => array(
+        'src/Google/Client.php',
       ),
     ),
+//    'versions' => array(
+//      '1.0.5-beta' => array(
+//        'files' => array(
+//          'php' => array(
+//            'src/Google/Client.php',
+//          ),
+//        ),
+//      ),
+//      '1.1.4' => array(
+//        'files' => array(
+//          'php' => array(
+//            'src/Google/Client.php',
+//          ),
+//        ),
+//      ),
+//      '1.1.5' => array(
+//        'files' => array(
+//          'php' => array(
+//            'src/Google/Client.php',
+//          ),
+//        ),
+//      ),
+//    ),
   );
   return $libraries;
 }
