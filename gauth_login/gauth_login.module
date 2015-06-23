@@ -115,7 +115,7 @@ function gauth_login_gauth_google_response() {
             watchdog('gauth_login', $message);
 
             // Send the user back to the home page.
-            drupal_goto(destination);
+            drupal_goto($destination);
           }
           else {
             // Add a new user based upon the Account settings.
@@ -148,7 +148,7 @@ function gauth_login_gauth_google_response() {
       }
     }
   }
-  drupal_goto(destination);
+  drupal_goto($destination);
 }
 
 /**
