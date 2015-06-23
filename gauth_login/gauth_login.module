@@ -46,6 +46,11 @@ function gauth_login_libraries_info_alter(&$libraries) {
  * Implementation of hook_gauth_google_response().
  */
 function gauth_login_gauth_google_response() {
+  // ** Workaround destination functionality **
+  // Restore the destination if available. This is a workaround due to the
+  // Authorized redirect URIs for Google OAuth not accepting a destination
+  // parameter.
+  $destination = variable_get('gauth_login_destination', '');
   if (isset($_GET['state'])) {
     $state = $_GET['state'];
     if ($state != $_SESSION['gauth_login_state']) {
@@ -110,7 +115,7 @@ function gauth_login_gauth_google_response() {
             watchdog('gauth_login', $message);
 
             // Send the user back to the home page.
-            drupal_goto();
+            drupal_goto(destination);
           }
           else {
             // Add a new user based upon the Account settings.
@@ -143,7 +148,7 @@ function gauth_login_gauth_google_response() {
       }
     }
   }
-  drupal_goto();
+  drupal_goto(destination);
 }
 
 /**
@@ -212,8 +217,18 @@ function gauth_login_user_login_submit() {
     $_SESSION['gauth_login_state'] = $state;
     $client->setState($state);
     $url = 'https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=' . url('gauth/response_handler', array('https' => TRUE, 'absolute' => TRUE)) . '&client_id=' . variable_get('gauth_login_client_id') . '&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&state=' . $_SESSION['gauth_login_state'];
+    // ** Workaround destination functionality **
+    // Since the Authorized redirect URIs for Google OAuth will not work with
+    // the destination query parameter (meaning adding ?destination=node/3 to
+    // the redirect_uri), we need to simulate the goto destination by storing
+    // the URI. Then, in hook_gauth_google_response(), use the variable to
+    // set the destination.
     if (isset($_GET['destination'])) {
+      variable_set('gauth_login_destination', $_GET['destination']);
       unset($_GET['destination']);
+    }
+    else {
+      variable_set('gauth_login_destination', NULL);
     }
     drupal_goto($url);
   }
