@@ -93,10 +93,24 @@ function gauth_login_gauth_google_response() {
   }
 
   // Return access denied if states don't match.
-  // @TODO Implement path in https://www.drupal.org/node/2486697.
   $state = $_GET['state'];
   if ($state != $_SESSION['gauth_login_state']) {
-    return new Response('Invalid state parameter', 401);
+    // Set the user message.
+    drupal_set_message('Invalid value. Please contact your administrator.', 'error');
+
+    // Create a watchdog message.
+    $message = t('State and session values do not match: %state|%session', array(
+      '%state' => $state,
+      '%session' => $_SESSION['gauth_login_state'],
+    ));
+
+    // Watchdog log.
+    watchdog('gauth_login', $message, array(), WATCHDOG_WARNING);
+
+    // Deny access.
+    drupal_access_denied();
+
+    return;
   }
 
   // If code for authentication is empty, return to destination.
