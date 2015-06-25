@@ -1,6 +1,6 @@
 name = Google Login Support
-description = "Google Authentication for login.  This module provides addon feature for login using google"
+description = "Google Authentication for login. This module provides addon feature for login to Drupal using Google."
 core = 7.x
 dependencies[] = gauth
-package = Google Api
+package = Google API
 configure = admin/config/services/gauth_login
